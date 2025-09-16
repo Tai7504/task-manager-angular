@@ -1,0 +1,107 @@
+<!-- Container chính cho task manager -->
+<div class="task-manager">
+  <!-- Header -->
+  <div class="header">
+    <h1 class="title">
+      <i class="icon">📋</i>
+      Task Manager
+    </h1>
+    <p class="subtitle">Quản lý công việc của bạn một cách hiệu quả</p>
+  </div>
+
+  <!-- Phần nhập công việc mới -->
+  <div class="input-section">
+    <div class="input-group">
+      <input
+        type="text"
+        [(ngModel)]="newTask"
+        placeholder="Nhập công việc mới..."
+        class="task-input"
+        (keyup.enter)="addTask()"
+      />
+      <button (click)="addTask()" class="btn-add">
+        <i class="plus-icon">+</i>
+        Thêm
+      </button>
+    </div>
+  </div>
+
+  <!-- Thống kê -->
+  <div class="stats" *ngIf="tasks.length > 0">
+    <div class="stat-item">
+      <span class="stat-number">{{ tasks.length }}</span>
+      <span class="stat-label">Công việc</span>
+    </div>
+  </div>
+
+  <!-- Danh sách công việc -->
+  <div class="task-list">
+    <!-- Hiển thị thông báo khi chưa có công việc -->
+    <div *ngIf="tasks.length === 0" class="empty-state">
+      <div class="empty-icon">📝</div>
+      <h3>Chưa có công việc nào</h3>
+      <p>Hãy thêm công việc đầu tiên của bạn!</p>
+    </div>
+
+    <!-- Lặp qua mảng tasks để hiển thị từng công việc -->
+    <div *ngFor="let task of tasks; let i = index" class="task-item">
+      <div class="task-content">
+        <!-- Hiển thị tên công việc khi không trong chế độ sửa -->
+        <div *ngIf="editingIndex !== i" class="task-text">
+          <span class="task-number">{{ i + 1 }}</span>
+          <span class="task-name">{{ task }}</span>
+        </div>
+
+        <!-- Hiển thị ô nhập khi đang sửa -->
+        <div *ngIf="editingIndex === i" class="edit-mode">
+          <input
+            type="text"
+            [(ngModel)]="editingText"
+            class="edit-input"
+            (keyup.enter)="saveEdit()"
+            (keyup.escape)="editingIndex = -1"
+          />
+        </div>
+      </div>
+
+      <!-- Các nút chức năng -->
+      <div class="task-actions">
+        <!-- Nút Sửa -->
+        <button
+          *ngIf="editingIndex !== i"
+          (click)="startEdit(i)"
+          class="btn-action btn-edit"
+          title="Sửa">
+          ✏️
+        </button>
+
+        <!-- Nút Lưu -->
+        <button
+          *ngIf="editingIndex === i"
+          (click)="saveEdit()"
+          class="btn-action btn-save"
+          title="Lưu">
+          ✅
+        </button>
+
+        <!-- Nút Hủy khi đang sửa -->
+        <button
+          *ngIf="editingIndex === i"
+          (click)="editingIndex = -1"
+          class="btn-action btn-cancel"
+          title="Hủy">
+          ❌
+        </button>
+
+        <!-- Nút Xóa -->
+        <button
+          *ngIf="editingIndex !== i"
+          (click)="deleteTask(i)"
+          class="btn-action btn-delete"
+          title="Xóa">
+          🗑️
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
